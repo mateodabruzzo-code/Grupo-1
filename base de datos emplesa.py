@@ -114,6 +114,67 @@ def lista_empleados():
             busca.config(text="contacto no encontrado")
             print("nnnnnnnnnn")
 
+######################################################################################################################################3
+def ver_lista():
+    lista.delete(0, tk.END)
+    cursor.execute("SELECT * FROM empleados")
+
+    for u in cursor.fetchall():
+        lista.insert(tk.END, u)
+        print("222")
+
+def modificar_nombre():
+    
+    t1=entrada1.get()
+    t2=entrada2.get()  
+    cursor.execute("UPDATE empleados SET nombre_y_apellido = ? WHERE id = ?", (t2,t1))
+    conexion.commit()
+    ver_lista()
+
+
+def modificar_asistencia():
+    
+    t1=entrada1.get()
+    t2=entrada5.get()
+    cursor.execute("UPDATE empleados SET asistencias = ? WHERE id = ?", (t2,t1))
+    conexion.commit()
+    ver_lista()
+
+def anios_trabajados():
+    
+    t1=entrada1.get()
+    t2=entrada5.get()
+    cursor.execute("UPDATE empleados SET anios_trabajados = ? WHERE id = ?", (t2,t1))
+    conexion.commit()
+    ver_lista()
+    
+def borar():
+    
+    t1=entrada1.get()
+    cursor.execute("DELETE FROM empleados WHERE id=?",(t1,))
+    conexion.commit()
+    ver_lista()
+    
+def buscar():    
+    et=int(entrada1.get())
+
+    print("holaaaaa1")
+
+    cursor.execute("SELECT * FROM empleados WHERE id = ?", (et,))
+    print("holaaaaa2")
+
+    idbusca=cursor.fetchall()
+    for i in idbusca:
+        print("holaaaaa")
+        print("paa")
+        if et in i:
+            busca.config(text=i) 
+            print("sssssssss")
+        else:
+            busca.config(text="contacto no encontrado")
+            print("nnnnnnnnnn")
+
+#####################################################################################################################################
 
 ventana = tk.Tk()
 ventana.title("Prueba Multiprocessing")
