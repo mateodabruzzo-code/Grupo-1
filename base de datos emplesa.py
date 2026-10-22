@@ -5,17 +5,31 @@ import tkinter as tk
 
 
 conexion=sqlite3.connect("/home/programador10/Desktop/archivis/base de datos en grupo.db")
-
-conexion2=sqlite3.connect("/home/programador10/Desktop/archivis/lista de empleados.db")
-
-
 cursor=conexion.cursor()
+
+
 cursor.execute(""" 
          
 CREATE TABLE IF NOT EXISTS sucursales (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 nombre_sucursal TEXT,
 dureccion INTEGER
+
+
+)            
+""")   
+conexion.commit()
+
+cursor.execute(""" 
+        
+CREATE TABLE IF NOT EXISTS empleados (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+nombre_y_apellido TEXT,
+anios_contratado INTEGER,
+anios_trabajados INTEGER,
+asistencias INTEGER,
+dni INTEGER,
+id_sucursal INTEGER
 
 
 )            
@@ -86,8 +100,19 @@ def buscar():
             print("nnnnnnnnnn")
             
 def lista_empleados():
-    cursor.execute("SELECT * FROM empleados WHERE id = ?", (1))
+    et=int(entrada1.get())
+    cursor.execute("SELECT * FROM empleados WHERE id_sucursal = ?", (et,))
 
+    idbusca=cursor.fetchall()
+    for i in idbusca:
+        print("holaaaaa")
+        print("paa")
+        if et in i:
+            lista2.insert(tk.END, et)
+            print("222")
+        else:
+            busca.config(text="contacto no encontrado")
+            print("nnnnnnnnnn")
 
 
 ventana = tk.Tk()
@@ -113,12 +138,14 @@ busca.pack()
 tk.Button(ventana,text="agregar producto",command=agragar_data).pack()
 tk.Button(ventana,text="modificar nombre de emplesa",command=md_nombre_sucursales).pack()
 tk.Button(ventana,text="modificar presio de emplesa",command=md_direccion_sucursales).pack()
-tk.Button(ventana,text="buscador",command=buscar).pack()
+tk.Button(ventana,text="buscador",command=lista_empleados).pack()
 
 
 lista=tk.Listbox(ventana)
 lista.pack()
 
+lista2=tk.Listbox(ventana)
+lista2.pack()
 
 ver_lista()
 
