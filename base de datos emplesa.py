@@ -4,7 +4,7 @@ import tkinter as tk
 
 
 
-conexion=sqlite3.connect("/home/programador10/Desktop/archivis/base de datos en grupo.db")
+conexion=sqlite3.connect("base de datos en grupo.db")
 cursor=conexion.cursor()
 
 
@@ -114,46 +114,62 @@ def lista_empleados():
             busca.config(text="contacto no encontrado")
             print("nnnnnnnnnn")
 
-######################################################################################################################################3
+######################################################################################################################################
+#empleados
 def ver_lista():
     lista.delete(0, tk.END)
     cursor.execute("SELECT * FROM empleados")
-
     for u in cursor.fetchall():
         lista.insert(tk.END, u)
-        print("222")
-
-def modificar_nombre():
+        
+def comprobar(empleado,entry_,orden):
+    variable=entry_.get()
+    if variable=="":
+        print(empleado[orden])
+        return empleado[orden]
+    else:
+        print(variable)
+        return variable
     
-    t1=entrada1.get()
-    t2=entrada2.get()  
-    cursor.execute("UPDATE empleados SET nombre_y_apellido = ? WHERE id = ?", (t2,t1))
+def new_empleado():
+    nom_ape=entry_nom_ape.get()
+    anio_inicio=entry_anio_inicio.get()
+    anios_trabajados=entry_anios_trabajados.get()
+    asist=entry_asistencias.get()
+    dni=entry_dni.get()
+    cursor.execute("INSERT INTO empleados (nombre_y_apellido,anios_contratado,anios_trabajados,asistencias,dni) VALUES (?,?,?,?,?)",(nom_ape,anio_inicio,anios_trabajados,asist,dni))
     conexion.commit()
     ver_lista()
-
-
-def modificar_asistencia():
+    limpiar_entry_empleados()
     
-    t1=entrada1.get()
-    t2=entrada5.get()
-    cursor.execute("UPDATE empleados SET asistencias = ? WHERE id = ?", (t2,t1))
+def editar_empleado():
+    p_id=entry_id.get()
+    cursor.execute("SELECT * FROM empleados")
+    empleados=cursor.fetchall()
+    for empleado in empleados:
+        if p_id==empleado[0]:
+            nom_ape=comprobar(empleado,entry_nom_ape,1)
+            anios_trabajados=comprobar(empleado,anios_trabajados,3)
+            asist=comprobar(empleado,entry_asistencias,4)
+            cursor.execute("UPDATE empleados SET nombre_y_apellido = ?, anios_trabajados = ?, asistencias = ? WHERE id = ?",(nom_ape,anios_trabajados,p_id,asist))
+            conexion.commit()
+            ver_lista()
+            limpiar_entry_empleados()
+
+def eliminar_empleado():
+    p_id=entry_id.get()
+    cursor.execute("DELETE FROM empleados WHERE id = ?",(p_id,))
     conexion.commit()
     ver_lista()
+    limpiar_entry_empleados()
 
-def anios_trabajados():
-    
-    t1=entrada1.get()
-    t2=entrada5.get()
-    cursor.execute("UPDATE empleados SET anios_trabajados = ? WHERE id = ?", (t2,t1))
-    conexion.commit()
-    ver_lista()
-    
-def borar():
-    
-    t1=entrada1.get()
-    cursor.execute("DELETE FROM empleados WHERE id=?",(t1,))
-    conexion.commit()
-    ver_lista()
+def limpiar_entry_empleados():
+    entry_id.delete(0,tk.END)
+    entry_nom_ape.delete(0,tk.END)
+    entry_anio_inicio.delete(0,tk.END)
+    entry_anios_trabajados.delete(0,tk.END)
+    entry_asistencias.delete(0,tk.END)
+    entry_dni.delete(0,tk.END)
     
 def buscar():    
     et=int(entrada1.get())
@@ -193,8 +209,6 @@ resultado.pack()
 entrada3=tk.Entry(ventana)
 entrada3.pack()
 
-busca=tk.Label(ventana, text="")
-busca.pack()
 
 tk.Button(ventana,text="agregar producto",command=agragar_data).pack()
 tk.Button(ventana,text="modificar nombre de emplesa",command=md_nombre_sucursales).pack()
@@ -209,5 +223,41 @@ lista2=tk.Listbox(ventana)
 lista2.pack()
 
 ver_lista()
+
+###############################################################
+#NEW VENTANA DE EMPLEADOS AQUI
+
+label_id=tk.Label(ventana, text="ID")
+label_id.pack()
+entry_id=tk.Entry(ventana)
+entry_id.pack()
+
+label_nom_ape=tk.Label(ventana, text="nombre_apellido")
+label_nom_ape.pack()
+entry_nom_ape=tk.Entry(ventana)
+entry_nom_ape.pack()
+
+label_anio_inicio=tk.Label(ventana, text="anio de inicio")
+label_anio_inicio.pack()
+entry_anio_inicio=tk.Entry(ventana)
+entry_anio_inicio.pack()
+
+label_anios_trabajados=tk.Label(ventana, text="anios trabajados")
+label_anios_trabajados
+entry_anios_trabajados=tk.Entry(ventana)
+entry_anios_trabajados.pack()
+
+label_asistencias=tk.Label(ventana, text="asistencias")
+label_asistencias.pack()
+entry_asistencias=tk.Entry(ventana)
+entry_asistencias.pack()
+
+label_dni=tk.Label(ventana, text="asistencias")
+label_dni.pack()
+entry_dni=tk.Entry(ventana)
+entry_dni.pack()
+
+busca=tk.Label(ventana, text="")
+busca.pack()
 
 ventana.mainloop()
